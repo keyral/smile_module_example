@@ -36,6 +36,7 @@ function burn_entity_info(){
     'base table' => 'burn_user',
     // uri define to function burn_uri
     'uri callback' => 'burn_uri',
+    //to use fieldapi
     'fieldable' => TRUE,
     'entity keys' => array(
         // id primary
@@ -68,6 +69,16 @@ function burn_entity_info(){
             'access arguments' => array(PER_ROLE)
         )
     );
+    //bundles contrib
+    $entity['burn_user']['bundles']['visitor'] =  array(
+        'label' => t('Visitor'),
+        'admin' => array(
+            'path' => 'admin/burn/%burn_type',
+            'real path' => 'admin/burn/visitor',
+            'bundle argument' => 1,
+            'access arguments' => array(PER_ROLE)
+        )
+    );
     return $entity;
 }
 
@@ -82,10 +93,21 @@ function burn_uri($burn_user){
         return array('path' => 'burn/' . $burn_user->bid );
 }
 
+/**
+ * Add function burn_user_load
+ *
+ * @param $burn_user
+ * @return bool
+ *
+ * Return to bundle
+ */
 function burn_user_load($burn_user) {
     switch ($burn_user) {
         case 'contrib':
+            return $burn_user;
         case 'admin':
+            return $burn_user;
+        case 'visitor':
             return $burn_user;
         default:
             return FALSE;
