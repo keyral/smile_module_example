@@ -7,12 +7,7 @@ class BurnQuery {
         $query = new EntityFieldQuery();
         $query->entityCondition('entity_type', 'burn_user');
         $result = $query->execute();
-        if(isset($result['burn_user'])){
-            return $result['burn_user'];
-        }
-        else {
-            return false;
-        }
+        return isset($result['burn_user']) ? $result['burn_user'] : FALSE;
     }
 
     static function QueryByType($type = NULL){
@@ -20,12 +15,7 @@ class BurnQuery {
         $query->entityCondition('entity_type', 'burn_user');
         $query->entityCondition('bundle', $type);
         $result =  $query->execute();
-        if(isset($result['burn_user'])){
-            return $result['burn_user'];
-        }
-        else {
-            return false;
-        }
+        return isset($result['burn_user']) ? $result['burn_user'] : FALSE;
     }
 
     static function Load($bids = array(), $conditions = array(), $reset = FALSE){

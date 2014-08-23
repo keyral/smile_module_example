@@ -26,6 +26,7 @@ function burn_user_admin($type = NULL)
         $rows = array();
         $rows[] = array(l(t('Contrib'), 'admin/burn/contrib'));
         $rows[] = array(l(t('Admin'), 'admin/burn/admin'));
+        $rows[] = array(l(t('Visitor'), 'admin/burn/visitor'));
         $header = array('Type');
         $content[] = array(
             '#theme' => 'table',
