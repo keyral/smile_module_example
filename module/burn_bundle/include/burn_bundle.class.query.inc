@@ -2,4 +2,8 @@
 
 class BurnBundleQuery {
 
+
+    static function QueryAll(){
+
+    }
 }

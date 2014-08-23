@@ -2,5 +2,4 @@ name = burn bundle
 description = "module qui genere des bundles pour burn."
 core = 7.x
 
-files[] = include/burn.class.controller.inc
-files[] = include/burn.class.query.inc
+files[] = include/burn_bundle.class.controller.inc

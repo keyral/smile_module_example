@@ -1,8 +1,10 @@
 <?php
 define('PER_ROLE', "administer nodes");
 
-
-function burn_menu()
+/**
+ * Implements hook_menu
+ */
+function burn_bundle_menu()
 {
     $items = array();
     $items['admin/burn/user'] = array(
@@ -14,34 +16,32 @@ function burn_menu()
     return $items;
 }
 
-    function burn_entity_info()
-    {
-        $entity = array();
-        $entity['burn_user_bundle'] = array(
-            'label' => t('bundle to user burn'),
-            // defined to .install
-            'base table' => 'burn_user_bundle',
-            //first controller
-            'controller class' => 'EntityAPIController',
-            //to use fieldapi
-            'fieldable' => TRUE,
-            'entity keys' => array(
-                // id primary
-                'id' => 'bid',
-                'name' => 'name'
-            ),
-        );
-        return $entity;
-    }
+/**
+ * Implements hook_entity_info
+ */
+function burn_bundle_entity_info()
+{
+    $entity = array();
+    $entity['burn_user_bundle'] = array(
+        'label' => t('bundle to user burn'),
+        // defined to .install
+        'base table' => 'burn_user_bundle',
+        //first controller
+        'controller class' => 'EntityAPIController',
+        //to use fieldapi
+        'fieldable' => TRUE,
+        'entity keys' => array(
+            // id primary
+            'id' => 'bid',
+            'name' => 'name'
+        ),
+    );
+    return $entity;
+}
 
-    /**
-     * Add function burn_uri
-     * @param $burn_user
-     * @return array
-     *
-     * Return uri to call entity burn_user
-     */
-    function burn_uri($burn_user)
-    {
-        return array('path' => 'burn/' . $burn_user->bid);
-    }
+/**
+ * Implements hook_entity_info_alter
+ */
+function burn_bundle_entity_info_alter(&$entity_info){
+
+}
