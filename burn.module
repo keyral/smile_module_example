@@ -92,12 +92,14 @@ function burn_user_load($burn_user) {
     }
 }
 
-
+/**
+ * Add function burn_user_type_title
+ *
+ * @param $burn_user
+ * @return mixed
+ *
+ * to return title by type to bundle.
+ */
 function burn_user_type_title($burn_user) {
     return $burn_user;
-}
-
-
-function function_cool(){
-    return 'tros cool';
 }
