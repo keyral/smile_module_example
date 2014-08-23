@@ -8,8 +8,8 @@ function burn_user_admin($type = NULL)
     $content = array();
     if ($type) {
         $content[] = drupal_get_form('burn_user_add', $type);
-        if($query = BurnQuery::QueryByType($type)){
-            $results = BurnQuery::Load(array_keys($query));
+        if($query = BurnQueryUser::QueryByType($type)){
+            $results = BurnQueryUser::Load(array_keys($query));
 
         $rows = array();
          foreach($results as $result){
@@ -54,7 +54,7 @@ function burn_user_add($form ,&$form_state, $type) {
         '#type' => 'value',
         '#value' => $type
     );
-    // On attache les formulaires des fields attachés
+    // Attach field to form
     field_attach_form('burn_user',$user, $form, $form_state);
 
     $form['actions'] = array('#type' => 'actions');
@@ -70,15 +70,16 @@ function burn_user_add_validate($form, &$form_state) {
 function burn_user_add_submit($form, &$form_state) {
     $user = $form_state['values']['user'];
     $user->name = $form_state['values']['name'];
-    // Enregistrement dans la base "books"
-    drupal_write_record('burn_user', $user);
-    // L'objet est construit avec les propriété issues de form_state
-    entity_form_submit_build_entity('burn_user', $user, $form, $form_state);
-    // Laissons aussi une chance a d'autres modules d'intervenir sur les Fields attachérs.
-    field_attach_submit('burn_user', $user, $form, $form_state);
-    // On insere les données des fields dans la base de données.
-    field_attach_insert('burn_user', $user);
-    // Et un petite message de confirmation.
+    //drupal_write_record('burn_user', $user);
+    $entity = entity_create('burn_user', (array) $user);
+    // construct to entity
+    entity_form_submit_build_entity('burn_user', $entity, $form, $form_state);
+    // Call to hook for field used in entity.
+    field_attach_submit('burn_user', $entity, $form, $form_state);
+    // insert to information in bd
+    BurnQueryUser::Save($entity);
+    //no use field_attache to no call controller custom
+    //field_attach_insert('burn_user', $user);
     drupal_set_message(
         t('new @type got added' ,
             array('@type' => $user->type))

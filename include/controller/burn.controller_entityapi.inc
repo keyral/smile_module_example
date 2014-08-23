@@ -1,15 +1,16 @@
 <?php
 
-class BurnController extends EntityAPIController {
-/**
-* Override the save method.
-*/
-
-public function save($entity, DatabaseTransaction $transaction = NULL) {
-if (isset($entity->is_new)) {
-$entity->created = REQUEST_TIME;
-}
-$entity->changed = REQUEST_TIME;
-return parent::save($entity, $transaction);
-}
+class BurnController extends EntityAPIController
+{
+    /**
+     * Override the save method.
+     */
+    public function save($entity, DatabaseTransaction $transaction = NULL)
+    {
+        if (isset($entity->is_new)) {
+            $entity->created = REQUEST_TIME;
+        }
+        $entity->changed = REQUEST_TIME;
+        return parent::save($entity, $transaction);
+    }
 }

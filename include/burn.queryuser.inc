@@ -1,7 +1,7 @@
 <?php
 
 
-class BurnQuery {
+class BurnQueryUser {
 
     static function QueryAll(){
         $query = new EntityFieldQuery();
@@ -20,6 +20,11 @@ class BurnQuery {
 
     static function Load($bids = array(), $conditions = array(), $reset = FALSE){
        return entity_load('burn_user',$bids, $conditions, $reset );
+    }
+
+    static function Save($user){
+        return entity_save('burn_user', $user);
+
     }
 
 

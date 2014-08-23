@@ -2,5 +2,7 @@ name = burn
 description = "module de test burn"
 core = 7.x
 
-files[] = include/burn.controller_entity.inc
-files[] = include/burn.query.inc
+files[] = include/controller/burn.controller_entity.inc
+files[] = include/controller/burn.controller_entityapi.inc
+files[] = include/burn.queryuser.inc
+files[] = include/burn.queryuserbundle.inc
