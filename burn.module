@@ -2,6 +2,8 @@
 //Define de droits
 define("PER_ROLE", "administer nodes");
 
+// Add file
+module_load_include('inc', 'burn', 'include/style/burn.image_style');
 /**
  * Implements hook_menu
  * @return array
