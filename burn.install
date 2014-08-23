@@ -1,10 +1,5 @@
 <?php
 
-
-/**
- * Implements hook_schema
- * @return array
- */
 function burn_schema()
 {
     $schema['burn_user'] = array(
@@ -34,35 +29,14 @@ function burn_schema()
                 'type' => 'int',
                 'not null' => FALSE,
             ),
+            'user' => array(
+                'description' => 'User to created item',
+                'type' => 'int',
+                'not null' => FALSE,
+            ),
         ),
         'primary key' => array('bid')
     );
-
-    $schema['burn_user_bundle'] = array(
-        'fields' => array(
-            'bunid' => array(
-                'type' => 'serial',
-                'unsigned' => TRUE,
-                'not null' => TRUE
-            ),
-
-            'name' => array(
-                'description' => 'Name to bundle',
-                'type' => 'text',
-                'size' => 'medium'
-            ),
-            'created' => array(
-                'description' => 'Created timestamp',
-                'type' => 'int',
-                'not null' => FALSE,
-            ),
-            'changed' => array(
-                'description' => 'Changed timestamp',
-                'type' => 'int',
-                'not null' => FALSE,
-            ),
-        ),
-        'primary key' => array('bunid')
-    );
     return $schema;
+
 }

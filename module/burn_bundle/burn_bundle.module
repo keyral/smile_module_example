@@ -1,0 +1,47 @@
+<?php
+define('PER_ROLE', "administer nodes");
+
+
+function burn_menu()
+{
+    $items = array();
+    $items['admin/burn/user'] = array(
+        'title' => 'Burn User',
+        'page callback' => 'burn_user_bundle_admin',
+        'access arguments' => array(PER_ROLE),
+        'file' => 'include/burn_user_bundle.admin.inc',
+    );
+    return $items;
+}
+
+    function burn_entity_info()
+    {
+        $entity = array();
+        $entity['burn_user_bundle'] = array(
+            'label' => t('bundle to user burn'),
+            // defined to .install
+            'base table' => 'burn_user_bundle',
+            //first controller
+            'controller class' => 'EntityAPIController',
+            //to use fieldapi
+            'fieldable' => TRUE,
+            'entity keys' => array(
+                // id primary
+                'id' => 'bid',
+                'name' => 'name'
+            ),
+        );
+        return $entity;
+    }
+
+    /**
+     * Add function burn_uri
+     * @param $burn_user
+     * @return array
+     *
+     * Return uri to call entity burn_user
+     */
+    function burn_uri($burn_user)
+    {
+        return array('path' => 'burn/' . $burn_user->bid);
+    }

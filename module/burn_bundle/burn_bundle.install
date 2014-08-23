@@ -1,0 +1,21 @@
+<?php
+
+function burn_bundle_schema()
+{
+    $schema['burn_user_bundle'] = array(
+        'fields' => array(
+            'bid' => array(
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE
+            ),
+            'name' => array(
+                'type' => 'text',
+                'size' => 'medium'
+            ),
+        ),
+        'primary key' => array('bid')
+    );
+    return $schema;
+
+}
