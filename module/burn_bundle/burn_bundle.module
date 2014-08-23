@@ -1,5 +1,5 @@
 <?php
-define('PER_ROLE', "administer nodes");
+define('PER_ROLE_BUNDLE', "administer nodes");
 
 /**
  * Implements hook_menu
@@ -7,10 +7,17 @@ define('PER_ROLE', "administer nodes");
 function burn_bundle_menu()
 {
     $items = array();
-    $items['admin/burn/user'] = array(
-        'title' => 'Burn User',
+    $items['admin/burn/bundle'] = array(
+        'title' => 'Burn Bundle',
         'page callback' => 'burn_user_bundle_admin',
-        'access arguments' => array(PER_ROLE),
+        'access arguments' => array(PER_ROLE_BUNDLE),
+        'file' => 'include/burn_user_bundle.admin.inc',
+    );
+    $items['admin/burn/bundle/%action/%bundle'] = array(
+        'title callback' => 'burn_user_bundle_title',
+        'title arguments' => array(3,4),
+        'access arguments' => array(PER_ROLE_BUNDLE),
+        'page arguments' => array(3,4),
         'file' => 'include/burn_user_bundle.admin.inc',
     );
     return $items;
