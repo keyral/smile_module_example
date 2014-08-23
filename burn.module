@@ -1,0 +1,103 @@
+<?php
+//Define de droits
+define("PER_ROLE", "administer nodes");
+
+/**
+ * Implements hook_menu
+ * @return array
+ */
+function burn_menu(){
+    $items = array();
+    $items['admin/burn'] = array(
+        'title' => 'Admin Burn ;)',
+        'page callback' => 'burn_user_admin',
+        'access arguments' => array(PER_ROLE),
+        'file' => 'include/burn_user_admin.view.inc',
+    );
+    $items['admin/burn/%burn_type'] = array(
+        'title callback' => 'burn_user_type_title',
+        'title arguments' => array(1),
+        'access arguments' => array(PER_ROLE),
+        'page arguments' => array(2),
+        'file' => 'include/burn_user_admin_type.view.inc',
+    );
+    return $items;
+}
+
+/**
+ * Implements hook_entity_info
+ * @return array
+ */
+function burn_entity_info(){
+    $entity = array();
+    $entity['burn_user'] = array (
+    'label' => t('User burn'),
+    // defined to .install
+    'base table' => 'burn_user',
+    // uri define to function burn_uri
+    'uri callback' => 'burn_uri',
+    'fieldable' => TRUE,
+    'entity keys' => array(
+        // id primary
+        'id' => 'bid' ,
+        // use to field_attach
+        'bundle' => 'type'
+    ),
+    'bundle keys' => array('bundle' => 'type'),
+    'bundles' => array()
+);
+
+    //bundles admin
+    $entity['burn_user']['bundles']['admin'] =  array(
+        'label' => t('Admin'),
+        'admin' => array(
+            'path' => 'admin/burn/%burn_type',
+            'real path' => 'admin/burn/admin',
+            'bundle argument' => 1,
+            'access arguments' => array(PER_ROLE)
+        )
+    );
+
+    //bundles contrib
+    $entity['burn_user']['bundles']['contrib'] =  array(
+        'label' => t('Contrib'),
+        'admin' => array(
+            'path' => 'admin/burn/%burn_type',
+            'real path' => 'admin/burn/contrib',
+            'bundle argument' => 1,
+            'access arguments' => array(PER_ROLE)
+        )
+    );
+    return $entity;
+}
+
+/**
+ * Add function burn_uri
+ * @param $burn_user
+ * @return array
+ *
+ * Return uri to call entity burn_user
+ */
+function burn_uri($burn_user){
+        return array('path' => 'burn/' . $burn_user->bid );
+}
+
+function burn_user_load($burn_user) {
+    switch ($burn_user) {
+        case 'contrib':
+        case 'admin':
+            return $burn_user;
+        default:
+            return FALSE;
+    }
+}
+
+
+function burn_user_type_title($burn_user) {
+    return $burn_user;
+}
+
+
+function function_cool(){
+    return 'tros cool';
+}
