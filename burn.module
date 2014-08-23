@@ -8,7 +8,8 @@ module_load_include('inc', 'burn', 'include/style/burn.image_style');
  * Implements hook_menu
  * @return array
  */
-function burn_menu(){
+function burn_menu()
+{
     $items = array();
     $items['admin/burn'] = array(
         'title' => 'Admin Burn ;)',
@@ -30,28 +31,33 @@ function burn_menu(){
  * Implements hook_entity_info
  * @return array
  */
-function burn_entity_info(){
+function burn_entity_info()
+{
     $entity = array();
-    $entity['burn_user'] = array (
-    'label' => t('User burn'),
-    // defined to .install
-    'base table' => 'burn_user',
-    // uri define to function burn_uri
-    'uri callback' => 'burn_uri',
-    //to use fieldapi
-    'fieldable' => TRUE,
-    'entity keys' => array(
-        // id primary
-        'id' => 'bid' ,
-        // use to field_attach
-        'bundle' => 'type'
-    ),
-    'bundle keys' => array('bundle' => 'type'),
-    'bundles' => array()
-);
+    $entity['burn_user'] = array(
+        'label' => t('User burn'),
+        // defined to .install
+        'base table' => 'burn_user',
+        // uri define to function burn_uri
+        'uri callback' => 'burn_uri',
+        //entity class to use default controller
+        'entity class' => 'Burn',
+        //first controller
+        'controller class' => 'BurnController',
+        //to use fieldapi
+        'fieldable' => TRUE,
+        'entity keys' => array(
+            // id primary
+            'id' => 'bid',
+            // use to field_attach
+            'bundle' => 'type'
+        ),
+        'bundle keys' => array('bundle' => 'type'),
+        'bundles' => array()
+    );
 
     //bundles admin
-    $entity['burn_user']['bundles']['admin'] =  array(
+    $entity['burn_user']['bundles']['admin'] = array(
         'label' => t('Admin'),
         'admin' => array(
             'path' => 'admin/burn/%burn_type',
@@ -62,7 +68,7 @@ function burn_entity_info(){
     );
 
     //bundles contrib
-    $entity['burn_user']['bundles']['contrib'] =  array(
+    $entity['burn_user']['bundles']['contrib'] = array(
         'label' => t('Contrib'),
         'admin' => array(
             'path' => 'admin/burn/%burn_type',
@@ -72,7 +78,7 @@ function burn_entity_info(){
         )
     );
     //bundles contrib
-    $entity['burn_user']['bundles']['visitor'] =  array(
+    $entity['burn_user']['bundles']['visitor'] = array(
         'label' => t('Visitor'),
         'admin' => array(
             'path' => 'admin/burn/%burn_type',
@@ -91,8 +97,9 @@ function burn_entity_info(){
  *
  * Return uri to call entity burn_user
  */
-function burn_uri($burn_user){
-        return array('path' => 'burn/' . $burn_user->bid );
+function burn_uri($burn_user)
+{
+    return array('path' => 'burn/' . $burn_user->bid);
 }
 
 /**
@@ -103,7 +110,8 @@ function burn_uri($burn_user){
  *
  * Return to bundle
  */
-function burn_user_load($burn_user) {
+function burn_user_load($burn_user)
+{
     switch ($burn_user) {
         case 'contrib':
             return $burn_user;
@@ -124,6 +132,7 @@ function burn_user_load($burn_user) {
  *
  * to return title by type to bundle.
  */
-function burn_user_type_title($burn_user) {
+function burn_user_type_title($burn_user)
+{
     return $burn_user;
 }
