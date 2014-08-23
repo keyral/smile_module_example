@@ -2,5 +2,5 @@ name = burn
 description = "module de test burn"
 core = 7.x
 
-
+files[] = include/burn.controller_entity.inc
 files[] = include/burn.query.inc
