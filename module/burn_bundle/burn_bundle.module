@@ -13,7 +13,7 @@ function burn_bundle_menu()
         'access arguments' => array(PER_ROLE_BUNDLE),
         'file' => 'include/burn_user_bundle.admin.inc',
     );
-    $items['admin/burn/bundle/%action/%bundle'] = array(
+    $items['admin/burn/bundle/%action/%burn_id_bundle'] = array(
         'title callback' => 'burn_user_bundle_title',
         'title arguments' => array(3,4),
         'access arguments' => array(PER_ROLE_BUNDLE),
@@ -50,5 +50,32 @@ function burn_bundle_entity_info()
  * Implements hook_entity_info_alter
  */
 function burn_bundle_entity_info_alter(&$entity_info){
+    foreach (BurnBundleQuery::QueryAll() as $bundle) {
+        $entity_info['burn_user']['bundles'][$bundle->name] = array(
+            'label' => $bundle->name,
+            'admin' => array(
+                'path' => 'admin/burn/bundle/edit/%burn_id_bundle',
+                'real path' => 'admin/burn/bundle/edit/'.$bundle->bid,
+                'bundle argument' => 4,
+                'access arguments' => array(PER_ROLE_BUNDLE),
+            ),
+        );
+    }
+}
 
+/**
+ * Implements hook_load
+ * @param $bid
+ * @return bool
+ *
+ * Return value if true or false
+ */
+function burn_id_bundle_load($bid){
+    $bundle = BurnBundleQuery::Load($bid);
+    if(isset($bundle) && isset($bundle->name)){
+    return $bundle->name;
+    }
+    else {
+        return FALSE;
+    }
 }
