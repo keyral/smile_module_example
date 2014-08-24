@@ -1,5 +1,19 @@
 <?php
 
+/**
+ * Class Burn
+ *
+ * add classe to extends for entity
+ */
+class BurnUser extends Entity
+{
+    protected function defaultUri()
+    {
+        return array('path' => 'burn/' . $this->identifier());
+    }
+}
+
+
 class BurnController extends EntityAPIController
 {
     /**
@@ -14,3 +28,4 @@ class BurnController extends EntityAPIController
         return parent::save($entity, $transaction);
     }
 }
+
