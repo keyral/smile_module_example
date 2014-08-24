@@ -1,175 +1,79 @@
 <?php
-//Define de droits
-define("PER_ROLE", "administer nodes");
+define('PER_ROLE', "administer nodes");
 
-// Add file
-module_load_include('inc', 'burn', 'include/style/burn.image_style');
-/**
- * Implements hook_menu
- * @return array
- */
+
 function burn_menu()
 {
     $items = array();
     $items['admin/burn'] = array(
-        'title' => 'Admin Burn ;)',
+        'title' => 'Burn',
+        'description' => 'Admin to burn modules.',
+        'page callback' => 'system_admin_menu_block_page',
+        'access arguments' => array(PER_ROLE),
+        'file' => 'system.admin.inc',
+        'file path' => drupal_get_path('module', 'system'),
+    );
+    $items['admin/burn/user'] = array(
+        'title' => 'Burn User',
         'page callback' => 'burn_user_admin',
         'access arguments' => array(PER_ROLE),
-        'file' => 'include/burn_user_admin.view.inc',
+        'file' => 'include/burn_user.admin.inc',
     );
-    $items['admin/burn/%burn_type'] = array(
-        'title callback' => 'burn_user_type_title',
-        'title arguments' => array(2),
+    $items['admin/burn/user/%user_id'] = array(
+        'title' => 'Burn User',
         'access arguments' => array(PER_ROLE),
-        'page arguments' => array(2),
-    );
-    // book default tab : add a book
-    $items['admin/burn/%burn_type'] = array(
-        'title' => 'add',
-        'access arguments' => array(PER_ROLE),
-        'type' => MENU_DEFAULT_LOCAL_TASK
-    );
-
-    //Items to bundle configuration
-    $items['admin/burn/bundle'] = array(
-        'title callback' => 'burn_user_bundle_title',
-        'page callback' => 'burn_user_bundle_admin',
-        'access arguments' => array(PER_ROLE),
-        'file' => 'include/burn_user_bundle_admin.view.inc',
-    );
-    $items['admin/burn/bundle/%bundle'] = array(
-        'title callback' => 'burn_user_bundle_title',
-        'title arguments' => array(3),
-        'page callback' => 'burn_user_bundle_admin',
         'page arguments' => array(3),
-        'access arguments' => array(PER_ROLE),
-        'file' => 'include/burn_user_bundle_admin.view.inc',
+        'page callback' => 'burn_user_admin',
+        'file' => 'include/burn_user.admin.inc',
     );
-
     return $items;
 }
 
-/**
- * Implements hook_entity_info
- * @return array
- */
-function burn_entity_info()
-{
-    $entity = array();
-    $entity['burn_user'] = array(
-        'label' => t('User burn'),
-        // defined to .install
-        'base table' => 'burn_user',
-        // uri define to function burn_uri url canonikal
-        'uri callback' => 'burn_uri',
-        //entity class to use default controller
-        'entity class' => 'Burn',
-        //first controller
-        'controller class' => 'BurnController',
-        //to use fieldapi
-        'fieldable' => TRUE,
-        'entity keys' => array(
-            // id primary
-            'id' => 'bid',
-            // use to field_attach
-            'bundle' => 'type'
-        ),
-        'bundle keys' => array('bundle' => 'type'),
-        'bundles' => array()
-    );
-
-    //bundles admin
-    $entity['burn_user']['bundles']['admin'] = array(
-        'label' => t('Admin'),
-        'admin' => array(
-            'path' => 'admin/burn/%burn_type',
-            'real path' => 'admin/burn/admin',
-            'bundle argument' => 2,
-            'access arguments' => array(PER_ROLE)
-        )
-    );
-
-    //bundles contrib
-    $entity['burn_user']['bundles']['contrib'] = array(
-        'label' => t('Contrib'),
-        'admin' => array(
-            'path' => 'admin/burn/%burn_type',
-            'real path' => 'admin/burn/contrib',
-            'bundle argument' => 2,
-            'access arguments' => array(PER_ROLE)
-        )
-    );
-    //bundles contrib
-    $entity['burn_user']['bundles']['visitor'] = array(
-        'label' => t('Visitor'),
-        'admin' => array(
-            'path' => 'admin/burn/%burn_type',
-            'real path' => 'admin/burn/visitor',
-            'bundle argument' => 2,
-            'access arguments' => array(PER_ROLE)
-        )
-    );
-
-    //info to entity bundle user
-    $entity['burn_user_bundle'] = array(
-        'label' => t('bundle user burn'),
-        'base table' => 'burn_user_bundle',
-        'controller class' => 'BurnController',
-        //to use fieldapi
-        'fieldable' => TRUE,
-        'entity keys' => array(
-            // id primary
-            'id' => 'bunid',
-            // name to bundle
-            'name' => 'name'
-        ),
-    );
-    return $entity;
-}
-
-/**
- * Add function burn_uri
- * @param $burn_user
- * @return array
- *
- * Return uri to call entity burn_user
- */
-function burn_uri($burn_user)
-{
-    return array('path' => 'burn/' . $burn_user->bid);
-}
-
-/**
- * Add function burn_user_load
- *
- * @param $burn_user
- * @return bool
- *
- * Return to bundle
- */
-function burn_user_load($burn_user)
-{
-    switch ($burn_user) {
-        case 'contrib':
-            return $burn_user;
-        case 'admin':
-            return $burn_user;
-        case 'visitor':
-            return $burn_user;
-        default:
-            return FALSE;
+    function burn_entity_info()
+    {
+        $entity = array();
+        $entity['burn_user'] = array(
+            'label' => t('User burn'),
+            // defined to .install
+            'base table' => 'burn_user',
+            // uri define to function burn_uri url canonikal
+            'uri callback' => 'burn_uri',
+            //entity class to use default controller
+            'entity class' => 'BurnUser',
+            //first controller
+            'controller class' => 'BurnController',
+            //to use fieldapi
+            'fieldable' => TRUE,
+            'entity keys' => array(
+                // id primary
+                'id' => 'bid',
+                // use to field_attach
+                'bundle' => 'type'
+            ),
+            'bundle keys' => array('bundle' => 'type'),
+            'bundles' => array()
+        );
+        return $entity;
     }
-}
+
+    /**
+     * Add function burn_uri
+     * @param $burn_user
+     * @return array
+     *
+     * Return uri to call entity burn_user
+     */
+    function burn_uri($burn_user)
+    {
+        return array('path' => 'burn/' . $burn_user->bid);
+    }
 
 /**
- * Add function burn_user_type_title
- *
- * @param $burn_user
- * @return mixed
- *
- * to return title by type to bundle.
+ * Implements hook_help().
  */
-function burn_user_type_title($burn_user)
-{
-    return $burn_user;
+function burn_help($path, $arg) {
+    switch ($path) {
+        case 'admin/burn':
+           return "add hook_help qui sauve pas ;)";
+    }
 }

@@ -13,7 +13,8 @@ function burn_schema()
                 'description' => 'the bundle to type in user',
                 'type' => 'text',
                 'size' => 'medium',
-                'not null' => TRUE
+                'not null' => TRUE,
+                'default' => ' '
             ),
             'name' => array(
                 'type' => 'text',
