@@ -19,7 +19,15 @@ function burn_menu()
         'access arguments' => array(PER_ROLE),
         'file' => 'include/burn_user.admin.inc',
     );
-    $items['admin/burn/user/%user_id'] = array(
+    $items['admin/burn/delete_user/%burn_user_id'] = array(
+        'title' => 'Burn User delete',
+        'access arguments' => array(PER_ROLE),
+        'page arguments' => array(3),
+        'page callback' => 'burn_user_admin_delete',
+        'file' => 'include/burn_user.admin.inc',
+        'type' => MENU_CALLBACK
+    );
+    $items['admin/burn/user/%burn_user_id'] = array(
         'title' => 'Burn User',
         'access arguments' => array(PER_ROLE),
         'page arguments' => array(3),
@@ -29,53 +37,69 @@ function burn_menu()
     return $items;
 }
 
-    function burn_entity_info()
-    {
-        $entity = array();
-        $entity['burn_user'] = array(
-            'label' => t('User burn'),
-            // defined to .install
-            'base table' => 'burn_user',
-            // uri define to function burn_uri url canonikal
-            'uri callback' => 'burn_uri',
-            //entity class to use default controller
-            'entity class' => 'BurnUser',
-            //first controller
-            'controller class' => 'BurnController',
-            //to use fieldapi
-            'fieldable' => TRUE,
-            'entity keys' => array(
-                // id primary
-                'id' => 'bid',
-                'name' => 'name',
-                // use to field_attach
-                'bundle' => 'type'
-            ),
-            'bundle keys' => array('bundle' => 'type'),
-            'bundles' => array(),
-            'view modes' => array(),
-        );
-        return $entity;
-    }
+function burn_entity_info()
+{
+    $entity = array();
+    $entity['burn_user'] = array(
+        'label' => t('User burn'),
+        // defined to .install
+        'base table' => 'burn_user',
+        // uri define to function burn_uri url canonikal
+        'uri callback' => 'burn_uri',
+        //entity class to use default controller
+        'entity class' => 'BurnUser',
+        //first controller
+        'controller class' => 'BurnController',
+        //to use fieldapi
+        'fieldable' => TRUE,
+        'entity keys' => array(
+            // id primary
+            'id' => 'bid',
+            'name' => 'name',
+            // use to field_attach
+            'bundle' => 'type'
+        ),
+        'bundle keys' => array('bundle' => 'type'),
+        'bundles' => array(),
+        'view modes' => array(),
+    );
+    return $entity;
+}
 
-    /**
-     * Add function burn_uri
-     * @param $burn_user
-     * @return array
-     *
-     * Return uri to call entity burn_user
-     */
-    function burn_uri($burn_user)
-    {
-        return array('path' => 'burn/' . $burn_user->bid);
-    }
+/**
+ * Add function burn_uri
+ * @param $burn_user
+ * @return array
+ *
+ * Return uri to call entity burn_user
+ */
+function burn_uri($burn_user)
+{
+    return array('path' => 'burn/' . $burn_user->bid);
+}
 
 /**
  * Implements hook_help().
  */
-function burn_help($path, $arg) {
+function burn_help($path, $arg)
+{
     switch ($path) {
         case 'admin/burn':
-           return "add hook_help qui sauve pas ;)";
+            return "add hook_help qui sauve pas ;)";
     }
+}
+
+/**
+ * Implements hook_view
+ */
+
+function burn_user_view($user = NULL, $view_mode = 'full', $langcode)
+{
+    // $user is input to entity_metadata_view_single and hook_load argumente
+    $content[] = array(
+        '#markup' => l($user->name, 'burn/' . $user->bid) . '<br>'
+    );
+    // Add to field
+    $content[] = field_attach_view('books', $user, $view_mode);
+    return $content;
 }
