@@ -1,0 +1,81 @@
+<?php
+
+/**
+ * Implements hook_entity_info_alter
+ */
+function burn_viewblock_entity_info_alter(&$entity){
+    $entity['burn_user']['view modes']['view_block'] = array(
+        'label' => t('Custom view block'),
+        'custom settings' => TRUE,
+    );
+}
+
+/**
+ * Implements hook_block_info
+ */
+function burn_viewblock_block_info() {
+    $blocks = array();
+    $blocks['burn_block_view'] = array(
+        // info: The name of the block.
+        'info' => t('burn block user'),
+        //Cache get to use
+        'cache' => DRUPAL_NO_CACHE,
+        /**
+         * Cache Used
+         *
+         * DRUPAL_CACHE_PER_ROLE ( default ) (anonymous is role )
+         * DRUPAL_NO_CACHE
+         * DRUPAL_CACHE_GLOBAL
+         * DRUPAL_CACHE_PER_PAGE
+         * DRUPAL_CACHE_CUSTOM
+         */
+    );
+    return $blocks;
+}
+
+/**
+ * Implements hook_block_configure
+ */
+function burn_viewblock_block_configure($delta = '') {
+    $form = array();
+    if ($delta == 'burn_block_view') {
+        $form['blockburn_number_user_input'] = array(
+            '#type' => 'textfield',
+            '#title' => t('Max user to print'),
+            '#size' => 60,
+            '#default_value' => variable_get('blockburn_number_user', 10),
+        );
+    }
+    return $form;
+}
+
+
+/**
+ * Implements hook_block_save
+ */
+function burn_viewblock_block_save($delta = '', $edit = array()) {
+    if ($delta == 'burn_block_view') {
+        variable_set('blockburn_number_user', $edit['blockburn_number_user_input']);
+    }
+}
+
+/**
+ * Implements hook_block_view
+ */
+function burn_viewblock_block_view($delta = '') {
+    global $language;
+    //Delta is name to block
+    $block = array();
+    switch ($delta) {
+        case 'burn_block_view':
+            //Request to user
+            $result = BurnQueryUser::QueryAll();
+            $entities = entity_load('burn_user',array_keys($result));
+            $views = entity_metadata_view_single($entities, "view_block",$language->language, 'burn_user');
+            $block['title'] = 'Title to block';
+            $block['subject'] = 'subject to block';
+            $block['content'] = render($views);
+            break;
+    }
+    return $block;
+}
