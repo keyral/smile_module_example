@@ -47,6 +47,7 @@ function burn_menu()
             'entity keys' => array(
                 // id primary
                 'id' => 'bid',
+                'name' => 'name',
                 // use to field_attach
                 'bundle' => 'type'
             ),

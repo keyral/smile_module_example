@@ -13,7 +13,11 @@ class BurnUser extends Entity
     }
 }
 
-
+/**
+ * Class BurnController
+ *
+ * add class to extends to EntityAPIController entityapi
+ */
 class BurnController extends EntityAPIController
 {
     /**
