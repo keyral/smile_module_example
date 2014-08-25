@@ -5,59 +5,55 @@ function burn_user_admin($user_id = NULL)
 {
     //Query All type
     if (module_exists('burn_bundle')) {
-        $burn_bundle_type = BurnBundleQuery::QueryAll();
+        $All_bundle = BurnBundleQuery::QueryAll();
     } else {
-        $burn_bundle_type = FALSE;
+        $All_bundle = FALSE;
     }
     $content = array();
-    if ($user_id) {
+        $BurnQueryAllUser = BurnQueryUser::QueryAll();
 
-        $content[] = ($burn_bundle_type) ? drupal_get_form('burn_user_add', $burn_bundle_type, $user_id) : array();
-        if ($query = BurnQueryUser::QueryByType($user_id)) {
-            $results = BurnQueryUser::Load(array_keys($query));
+
+        $content[] = ($All_bundle) ? drupal_get_form('burn_user_add', $All_bundle, $user_id) : array();
+        if ($BurnQueryAllUser) {
+            $BurnAllUser = BurnQueryUser::Load(array_keys($BurnQueryAllUser));
             $rows = array();
-            foreach ($results as $result) {
-                $rows[] = array(l($result->bid, 'burn/user/' . $result->type . '/' . $result->bid), $result->name, $result->type);
+            foreach ($BurnAllUser as $result) {
+                $rows[] = array(
+                    l($result->bid, 'admin/burn/user/'. $result->bid),
+                    $result->name, $result->type,
+                    format_date($result->created),
+                    format_date($result->changed),
+                    l(t('edit'),'admin/burn/user/'.$result->bid). ' ' . l(t('delete'), 'admin/burn/delete_user/'.$result->bid),
+                );
             }
-            $header = array(t('ID'), t('Name'), t('Type'));
+            $header = array(t('ID'), t('Name'), t('Type'),t('created'), t('changed'),t('Operation'));
             $content[] = array(
                 '#theme' => 'table',
                 '#header' => $header,
                 '#rows' => $rows,
             );
         }
-    } else {
-        $content[] = ($burn_bundle_type) ? drupal_get_form('burn_user_add', $burn_bundle_type) : array();
-        $rows = array();
-        $rows[] = array(l(t('Contrib'), 'admin/burn/contrib'));
-        $rows[] = array(l(t('Admin'), 'admin/burn/admin'));
-        $rows[] = array(l(t('Visitor'), 'admin/burn/visitor'));
-        $header = array('Type');
-        $content[] = array(
-            '#theme' => 'table',
-            '#header' => $header,
-            '#rows' => $rows,
-        );
-    }
     return $content;
 }
 
 function burn_user_add($form, &$form_state, $types, $user_id = NULL)
 {
-    if (isset($user_id) && $user_id != NULL) {
-        $user = new BurnWrapperUser($user_id);
+    if ($user_id != NULL) {
+        $query_user = BurnQueryUser::Load(array($user_id));
+        $user_load = array_pop($query_user);
+        $user = new BurnWrapperUser($user_load);
     } else {
-        $user = new stdClass();
+        $user_load = new stdClass();
     }
     $form['user'] = array(
         '#type' => 'value',
         '#title' => 'config name to burn user',
-        '#value' => $user,
+        '#value' => $user_load,
     );
     $form['name'] = array(
         '#type' => 'textfield',
         '#title' => 'Name to user',
-        '#default_value' => (isset($user->name)) ? $user->name : '',
+        '#default_value' => (isset($query_user)) ? $user->name->value() : '',
         '#required' => TRUE,
     );
     if ($user_id == NULL) {
@@ -72,10 +68,11 @@ function burn_user_add($form, &$form_state, $types, $user_id = NULL)
         );
     } else {
         $form['type'] = array(
-            '#type' => 'item',
-            '#title' => 'bundle user', // . $user_id->type,
+            '#type' => 'value',
+            '#title' => 'bundle user : ' . $user_load->type,
+            '#value' => $user_load->type,
         );
-        field_attach_form('burn_user', $user, $form, $form_state);
+        field_attach_form('burn_user', $user_load, $form, $form_state);
     }
 
 
@@ -102,7 +99,13 @@ function burn_user_add_submit($form, &$form_state)
         $user->name = $form_state['values']['name'];
         $user->type = $form_state['values']['type'];
         //drupal_write_record('burn_user', $user);
+        if(isset($user->bid)){
+            $entity = entity_load('burn_user',array($form_state['values']['user']->bid));
+            $entity = array_pop($entity);
+        }
+        else {
         $entity = entity_create('burn_user', (array)$user);
+        }
         // construct to entity
         entity_form_submit_build_entity('burn_user', $entity, $form, $form_state);
         // Call to hook for field used in entity.
@@ -126,4 +129,22 @@ function burn_user_add_submit($form, &$form_state)
 
 
 
+}
+
+
+/**
+ * Add function callback to delete items.
+ * @param $id
+ */
+function burn_user_admin_delete($bid = NULL){
+if($bid != NULL){
+    if(BurnQueryUser::Delete($bid)){
+        drupal_set_message(t('Burn user is delete'), 'status');
+        drupal_goto('admin/burn/user');
+    }
+    else {
+        drupal_set_message(t('Burn user is not delete'), 'error');
+    }
+
+}
 }
