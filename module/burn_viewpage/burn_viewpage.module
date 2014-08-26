@@ -1,11 +1,71 @@
 <?php
-
+define('PER_ROLE_VIEW', "administer nodes");
 /**
  * Implements hook_entity_info_alter
  */
-function burn_viewpage_entity_info_alter(&$entity){
+function burn_viewpage_entity_info_alter(&$entity)
+{
     $entity['burn_user']['view modes']['view_page'] = array(
         'label' => t('Custom view page'),
         'custom settings' => TRUE,
     );
+    $entity['burn_user']['view modes']['view_page_teaser'] = array(
+        'label' => t('Custom view page teaser'),
+        'custom settings' => TRUE,
+    );
+}
+
+
+function burn_viewpage_menu()
+{
+    $items = array();
+    $items['burn_all_article'] = array(
+        'title' => 'view all articles',
+        'page callback' => 'burn_user_viewpage_viewall',
+        'access arguments' => array(PER_ROLE_VIEW),
+        'file' => 'include/burn_viewpage.view_all.inc',
+        'type' => MENU_CALLBACK
+    );
+    $items['burn/%burn_id_render'] = array(
+        'title callback' => 'burn_user_viewpage_title',
+        'title arguments' => array(1),
+        'page callback' => 'burn_user_viewpage_view',
+        'page arguments' => array(1),
+        'access arguments' => array(PER_ROLE_VIEW),
+        'file' => 'include/burn_viewpage.view.inc',
+        'type' => MENU_CALLBACK
+    );
+    $items['burn/%burn_id_render/view'] = array(
+        'title' => 'view',
+        'page callback' => 'burn_user_viewpage_view',
+        'page arguments' => array(1),
+        'access arguments' => array(PER_ROLE_VIEW),
+        'file' => 'include/burn_viewpage.view.inc',
+        'type' => MENU_LOCAL_TASK
+    );
+// tabs view
+    $items['burn/%burn_id_render/edit'] = array(
+        'title' => 'edit',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('burn_page_edit', 1),
+        'access arguments' => array(PER_ROLE_VIEW),
+        'file' => 'include/burn_viewpage.form.inc',
+        'type' => MENU_LOCAL_TASK
+    );
+    return $items;
+}
+
+function burn_id_render_load($bid)
+{
+    $user_query = BurnQueryUser::Load(array($bid));
+    $user = array_pop($user_query);
+    if (isset($user) && isset($user->name)) {
+        return $user;
+    } else {
+        return FALSE;
+    }
+}
+
+function burn_user_viewpage_title($user){
+    return $user->name;
 }

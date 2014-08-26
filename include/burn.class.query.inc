@@ -25,7 +25,13 @@ class BurnQueryUser
     {
         return entity_load('burn_user', $bids, $conditions, $reset);
     }
-
+    static function QueryAllByPager(){
+        $query = new EntityFieldQuery();
+        $query->entityCondition('entity_type', 'burn_user')
+            ->pager(3, 0);
+        $result = $query->execute();
+        return isset($result['burn_user']) ? $result['burn_user'] : FALSE;
+    }
     static function Save($user)
     {
         return entity_save('burn_user', $user);

@@ -7,11 +7,13 @@
     <orderEntry type="module-library">
       <library name="PHP">
         <CLASSES>
+          <root url="file://$MODULE_DIR$/../../../../profiles" />
           <root url="file://$MODULE_DIR$/../../../../includes" />
           <root url="file://$MODULE_DIR$/../../../all/modules/contrib" />
           <root url="file://$MODULE_DIR$/../../../../modules" />
         </CLASSES>
         <SOURCES>
+          <root url="file://$MODULE_DIR$/../../../../profiles" />
           <root url="file://$MODULE_DIR$/../../../../includes" />
           <root url="file://$MODULE_DIR$/../../../all/modules/contrib" />
           <root url="file://$MODULE_DIR$/../../../../modules" />
