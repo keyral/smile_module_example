@@ -3,7 +3,8 @@
 /**
  * Implements hook_entity_info_alter
  */
-function burn_viewblock_entity_info_alter(&$entity){
+function burn_viewblock_entity_info_alter(&$entity)
+{
     $entity['burn_user']['view modes']['view_block'] = array(
         'label' => t('Custom view block'),
         'custom settings' => TRUE,
@@ -13,7 +14,8 @@ function burn_viewblock_entity_info_alter(&$entity){
 /**
  * Implements hook_block_info
  */
-function burn_viewblock_block_info() {
+function burn_viewblock_block_info()
+{
     $blocks = array();
     $blocks['burn_block_view'] = array(
         // info: The name of the block.
@@ -36,7 +38,8 @@ function burn_viewblock_block_info() {
 /**
  * Implements hook_block_configure
  */
-function burn_viewblock_block_configure($delta = '') {
+function burn_viewblock_block_configure($delta = '')
+{
     $form = array();
     if ($delta == 'burn_block_view') {
         $form['blockburn_number_user_input'] = array(
@@ -53,7 +56,8 @@ function burn_viewblock_block_configure($delta = '') {
 /**
  * Implements hook_block_save
  */
-function burn_viewblock_block_save($delta = '', $edit = array()) {
+function burn_viewblock_block_save($delta = '', $edit = array())
+{
     if ($delta == 'burn_block_view') {
         variable_set('blockburn_number_user', $edit['blockburn_number_user_input']);
     }
@@ -62,19 +66,28 @@ function burn_viewblock_block_save($delta = '', $edit = array()) {
 /**
  * Implements hook_block_view
  */
-function burn_viewblock_block_view($delta = '') {
+function burn_viewblock_block_view($delta = '')
+{
     global $language;
     //Delta is name to block
     $block = array();
     switch ($delta) {
         case 'burn_block_view':
-            //Request to user
-            $result = BurnQueryUser::QueryAll();
-            $entities = entity_load('burn_user',array_keys($result));
-            $views = entity_metadata_view_single($entities, "view_block",$language->language, 'burn_user');
+            //default cache is permanent
+            if ($cache = cache_get('block_burnuser_'.$language->language)) {
+                $content = $cache->data;
+            } else {
+                //Request to user
+                $result = BurnQueryUser::QueryAll();
+                $entities = entity_load('burn_user', array_keys($result));
+                $views = entity_metadata_view_single($entities, "view_block", $language->language, 'burn_user');
+                $content = render($views);
+                cache_set('block_burnuser_'.$language->language, $content);
+            }
             $block['title'] = 'Title to block';
             $block['subject'] = 'subject to block';
-            $block['content'] = render($views);
+            $block['content'] = $content;
+
             break;
     }
     return $block;

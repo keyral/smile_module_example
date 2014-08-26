@@ -1,0 +1,11 @@
+<?php
+
+/**
+ * Implements hook_entity_info_alter
+ */
+function burn_viewpage_entity_info_alter(&$entity){
+    $entity['burn_user']['view modes']['view_page'] = array(
+        'label' => t('Custom view page'),
+        'custom settings' => TRUE,
+    );
+}

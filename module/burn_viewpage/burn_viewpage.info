@@ -1,0 +1,4 @@
+name = burn viewpage
+description = "view page"
+core = 7.x
+dependencies[] = burn
