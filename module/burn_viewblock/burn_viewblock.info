@@ -1,3 +1,4 @@
 name = burn viewblock
 description = "view block to burn"
 core = 7.x
+dependencies[] = burn

@@ -92,14 +92,13 @@ function burn_help($path, $arg)
 /**
  * Implements hook_view
  */
-
 function burn_user_view($user = NULL, $view_mode = 'full', $langcode)
 {
     // $user is input to entity_metadata_view_single and hook_load argumente
     $content[] = array(
-        '#markup' => l($user->name, 'burn/' . $user->bid) . '<br>'
+        '#markup' => l($user->name, 'burn/' . $user->bid),
     );
     // Add to field
-    $content[] = field_attach_view('books', $user, $view_mode);
+    $content[] = field_attach_view('burn_user', $user, $view_mode);
     return $content;
 }

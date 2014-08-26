@@ -2,5 +2,7 @@ name = burn
 description = "module de test burn"
 core = 7.x
 
+dependencies[] = system (>7.13)
+dependencies[] = burn_bundle
 files[] = include/burn.class.controller.inc
 files[] = include/burn.class.query.inc
