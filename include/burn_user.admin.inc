@@ -3,6 +3,12 @@
 
 function burn_user_admin($user_id = NULL)
 {
+    if(module_exists('burn_viewpage')){
+        $content['view_all'] = array(
+            '#type' => 'item',
+            '#title' => l(t('View all'), 'burn_all_article'),
+        );
+    }
     //Query All type
     if (module_exists('burn_bundle')) {
         $All_bundle = BurnBundleQuery::QueryAll();
@@ -27,11 +33,13 @@ function burn_user_admin($user_id = NULL)
                 );
             }
             $header = array(t('ID'), t('Name'), t('Type'),t('created'), t('changed'),t('Operation'));
+
             $content[] = array(
                 '#theme' => 'table',
                 '#header' => $header,
                 '#rows' => $rows,
             );
+
         }
     return $content;
 }
