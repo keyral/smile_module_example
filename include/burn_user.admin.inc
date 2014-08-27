@@ -83,7 +83,6 @@ function burn_user_add($form, &$form_state, $types, $user_id = NULL)
         field_attach_form('burn_user', $user_load, $form, $form_state);
     }
 
-
     $form['actions'] = array('#type' => 'actions');
     $form['actions']['add'] = array(
         '#type' => 'submit',
